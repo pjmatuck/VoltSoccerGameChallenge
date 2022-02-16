@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -29,6 +30,8 @@ public class PlayerController : MonoBehaviour
             _velocityComposition.z = _zMovement * _speed * Time.deltaTime;
 
             _rigidbody.velocity = _velocityComposition;
+            
+            transform.LookAt(transform.position + new Vector3(_xMovement, 0f, _zMovement));
         }
     }
 }

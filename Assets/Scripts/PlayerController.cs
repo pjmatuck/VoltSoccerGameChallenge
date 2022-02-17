@@ -6,8 +6,9 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
 
-    [SerializeField] bool _isWithBall;
-    [SerializeField] float _speed;
+    [SerializeField] bool isWithBall;
+    [SerializeField] float speed;
+    [SerializeField] ChargingBarView chargingBar;
 
     Rigidbody _rigidbody;
     float _xMovement;
@@ -17,21 +18,33 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
+        chargingBar.OnMaxValue += OnMaxShootingCharge;
+        chargingBar.Value = 0;
     }
     
     void Update()
     {
-        if (_isWithBall)
+        if (isWithBall)
         {
             _xMovement = Input.GetAxis("Horizontal");
             _zMovement = Input.GetAxis("Vertical");
 
-            _velocityComposition.x = _xMovement * _speed * Time.deltaTime;
-            _velocityComposition.z = _zMovement * _speed * Time.deltaTime;
+            _velocityComposition.x = _xMovement * speed * Time.deltaTime;
+            _velocityComposition.z = _zMovement * speed * Time.deltaTime;
 
             _rigidbody.velocity = _velocityComposition;
             
             transform.LookAt(transform.position + new Vector3(_xMovement, 0f, _zMovement));
         }
+
+        if (Input.GetKey(KeyCode.Space))
+        {
+            chargingBar.Value += Time.deltaTime;
+        }
+    }
+
+    void OnMaxShootingCharge()
+    {
+        Debug.Log("## On max shooting star! ##");
     }
 }

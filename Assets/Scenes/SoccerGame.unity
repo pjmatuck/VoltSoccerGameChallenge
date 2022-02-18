@@ -1096,6 +1096,10 @@ PrefabInstance:
       propertyPath: isWithBall
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3741122122455954170, guid: 1d86162bf37b846929f6565cd3dd9312, type: 3}
+      propertyPath: shootingPower
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 6609611280087987714, guid: 1d86162bf37b846929f6565cd3dd9312, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 1

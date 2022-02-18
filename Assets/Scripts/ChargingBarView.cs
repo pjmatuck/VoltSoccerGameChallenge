@@ -26,4 +26,9 @@ public class ChargingBarView : MonoBehaviour
             }
         }
     }
+
+    public void ResetBar()
+    {
+        Value = 0;
+    }
 }

@@ -28,6 +28,7 @@ public class BallBehavior : MonoBehaviour
     public void Shoot(float power, Vector3 target)
     {
         _playerWithBall = null;
+        _thisTransform.parent = null;
         _rigidbody.velocity = CalculateVelocity(target);
     }
 
@@ -51,8 +52,15 @@ public class BallBehavior : MonoBehaviour
     {
         if (_playerWithBall)
         {
-            var playerPosition = _playerWithBall.transform.position; 
-            _thisTransform.localPosition = new Vector3(playerPosition.x + playerOffSet.x, 0, playerPosition.z + playerOffSet.z);
+            _thisTransform.position = _thisTransform.parent.position;
         }
+    }
+
+    Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles)
+    {
+        Vector3 dir = point - pivot;
+        //dir = Quaternion.Euler(angles) * dir;
+        point = dir + pivot;
+        return point;
     }
 }

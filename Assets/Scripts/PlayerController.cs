@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using UnityEngine;
+using Vector3 = UnityEngine.Vector3;
 
 public class PlayerController : MonoBehaviour
 {
@@ -11,6 +13,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] int shootingPower;
     [SerializeField] ChargingBarView chargingBar;
     [SerializeField] BallBehavior ball;
+    [SerializeField] Transform ballPivot;
 
     [Header("Testing vars - SHOULD REMOVE")] 
     [SerializeField] Vector3 target;
@@ -37,7 +40,7 @@ public class PlayerController : MonoBehaviour
 
             _velocityComposition.x = _xMovement * speed * Time.deltaTime;
             _velocityComposition.z = _zMovement * speed * Time.deltaTime;
-            
+
             Debug.DrawLine(transform.position, _velocityComposition * 10f, Color.magenta);
 
             _rigidbody.velocity = _velocityComposition;
@@ -96,6 +99,7 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("Ball"))
         {
             ball = other.gameObject.GetComponent<BallBehavior>();
+            ball.gameObject.transform.parent = ballPivot;
         }
     }
 }

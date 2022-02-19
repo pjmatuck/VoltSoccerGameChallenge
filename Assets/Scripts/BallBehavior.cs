@@ -1,29 +1,58 @@
+using System;
 using UnityEngine;
 
 public class BallBehavior : MonoBehaviour
 {
-    SpringJoint _joint;
+    [SerializeField] float highness;
+    [SerializeField] Vector3 playerOffSet;
+    
     Rigidbody _rigidbody;
     PlayerController _playerWithBall;
+
+    Transform _thisTransform;
     
     void Start()
     {
-        _joint = GetComponent<SpringJoint>();
         _rigidbody = GetComponent<Rigidbody>();
+        _thisTransform = transform;
     }
 
     void OnCollisionEnter(Collision other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            _joint.connectedBody = other.rigidbody;
             _playerWithBall = other.gameObject.GetComponent<PlayerController>();
         }
     }
 
-    public void Shoot(float power, Vector3 direction)
+    public void Shoot(float power, Vector3 target)
     {
-        _joint.connectedBody = null;
-        _rigidbody.AddForce(direction * power , ForceMode.Force);
+        _playerWithBall = null;
+        _rigidbody.velocity = CalculateVelocity(target);
+    }
+
+    Vector3 CalculateVelocity(Vector3 target)
+    {
+        var position = _thisTransform.position;
+        float gravityY = Physics.gravity.y;
+        
+        float displacementY = target.y - position.y;
+        Vector3 displacementXZ =
+            new Vector3(target.x - position.x, 0, target.z - position.z);
+
+        Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravityY * highness);
+        Vector3 velocityXZ = displacementXZ /
+                             (Mathf.Sqrt(-2 * highness / gravityY) + Mathf.Sqrt(2 * (displacementY - highness) / gravityY));
+
+        return velocityXZ + velocityY;
+    }
+
+    void Update()
+    {
+        if (_playerWithBall)
+        {
+            var playerPosition = _playerWithBall.transform.position; 
+            _thisTransform.localPosition = new Vector3(playerPosition.x + playerOffSet.x, 0, playerPosition.z + playerOffSet.z);
+        }
     }
 }

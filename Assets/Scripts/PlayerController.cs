@@ -12,6 +12,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] ChargingBarView chargingBar;
     [SerializeField] BallBehavior ball;
 
+    [Header("Testing vars - SHOULD REMOVE")] 
+    [SerializeField] Vector3 target;
+
     Rigidbody _rigidbody;
     float _xMovement;
     float _zMovement;
@@ -76,9 +79,8 @@ public class PlayerController : MonoBehaviour
         if (!_holdingShootingButton) return;
         
         _holdingShootingButton = false;
-        var velocity = _rigidbody.velocity;
-        ball.Shoot(chargingBar.Value * shootingPower, 
-            velocity != Vector3.zero ? velocity.normalized : transform.forward);
+        ball.Shoot(chargingBar.Value * shootingPower, target);
+        ball = null;
         chargingBar.ResetBar();
     }
 
@@ -86,9 +88,7 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("## On max shooting star! ##");
         _holdingShootingButton = false;
-        var velocity = _rigidbody.velocity;
-        ball.Shoot(shootingPower, 
-            velocity != Vector3.zero ? velocity.normalized : transform.forward);
+        ball.Shoot(shootingPower, target);
     }
 
     void OnCollisionEnter(Collision other)

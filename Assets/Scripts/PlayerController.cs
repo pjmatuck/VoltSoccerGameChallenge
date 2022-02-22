@@ -15,18 +15,32 @@ public class PlayerController : MonoBehaviour
     [SerializeField] BallBehavior ball;
     [SerializeField] Transform ballPivot;
 
+    public bool IsWithBall
+    {
+        get => isWithBall;
+        private set
+        {
+            ReceivedBallCallback.Invoke(transform);
+            isWithBall = value;
+        }
+    }
+
     [Header("Testing vars - SHOULD REMOVE")] 
     [SerializeField] Vector3 target;
 
+    GameController _gameController;
     Rigidbody _rigidbody;
     float _xMovement;
     float _zMovement;
     Vector3 _velocityComposition = new Vector3();
     bool _holdingShootingButton;
+
+    public event Action<Transform> ReceivedBallCallback;
     
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
+        _gameController = FindObjectOfType<GameController>();
         chargingBar.OnMaxValue += OnMaxShootingCharge;
         chargingBar.ResetBar();
     }
@@ -81,25 +95,36 @@ public class PlayerController : MonoBehaviour
         Debug.Log("## Release shooting star! ##");
         if (!_holdingShootingButton) return;
         
-        _holdingShootingButton = false;
-        ball.Shoot(chargingBar.Value * shootingPower, target);
-        ball = null;
+        PlayerShoot();
         chargingBar.ResetBar();
     }
 
     void OnMaxShootingCharge()
     {
         Debug.Log("## On max shooting star! ##");
+        PlayerShoot();
+    }
+
+    void PlayerShoot()
+    {
         _holdingShootingButton = false;
-        ball.Shoot(shootingPower, target);
+        ball.Shoot(shootingPower, FindClosestTarget());
+        ball = null;
+        IsWithBall = false;
     }
 
     void OnCollisionEnter(Collision other)
     {
         if (other.gameObject.CompareTag("Ball"))
         {
+            IsWithBall = true;
             ball = other.gameObject.GetComponent<BallBehavior>();
             ball.gameObject.transform.parent = ballPivot;
         }
+    }
+
+    Vector3 FindClosestTarget()
+    {
+        return _gameController.FindClosestPlayer(this, transform.forward).position;
     }
 }

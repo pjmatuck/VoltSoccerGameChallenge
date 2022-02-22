@@ -29,6 +29,9 @@ public class BallBehavior : MonoBehaviour
     {
         _playerWithBall = null;
         _thisTransform.parent = null;
+
+        
+        
         _rigidbody.velocity = CalculateVelocity(target);
     }
 
@@ -54,13 +57,5 @@ public class BallBehavior : MonoBehaviour
         {
             _thisTransform.position = _thisTransform.parent.position;
         }
-    }
-
-    Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles)
-    {
-        Vector3 dir = point - pivot;
-        //dir = Quaternion.Euler(angles) * dir;
-        point = dir + pivot;
-        return point;
     }
 }
